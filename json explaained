@@ -1,0 +1,102 @@
+Conteúdo 27 - POO 7 – Módulo JSON
+Seus programas poderão pedir aos usuários que forneçam determinados tipos
+de informação. Nesse caso você pode permitir que os usuários armazenem
+suas preferências em um jogo ou forneçam dados para uma visualização.
+Qualquer que seja o foco de seu programa, você armazenará as informações
+fornecidas pelos usuários em estruturas de dados como listas e dicionários.
+Quando os usuários fecham um programa, quase sempre você vai querer
+salvar as informações que eles forneceram. Uma maneira simples de fazer isso
+envolve armazenar seus dados usando o módulo json.
+O módulo json permite descarregar estruturas de dados Python simples em um
+arquivo e carregar os dados desse arquivo na próxima vez que o programa
+executar. Também podemos usar json para compartilhar dados entre diferentes
+programas Python. Melhor ainda, o formato de dados JSON não é específico
+de Python, portanto podemos compartilhar dados armazenados em formato
+JSON com pessoas que trabalhem com várias outras linguagens de
+programação. É um formato útil e portável, além de ser fácil de aprender.
+NOTA O formato JSON (JavaScript Object Notation, ou Notação de Objetos
+JavaScript) foi originalmente desenvolvido para JavaScript. Apesar disso,
+tornou-se um formato comum, utilizado por muitas linguagens, incluindo
+Python.
+# Exemplo:
+Um programa para armazenar um conjunto de números usando a função
+json.dump().
+number_writer.py
+___________________________________________
+import json
+numbers = [2, 3, 5, 7, 11, 13]
+filename = &#39;numbers.json&#39;
+with open(filename, &#39;w&#39;) as f_obj:
+json.dump(numbers, f_obj)
+
+A função json.dump() aceita dois argumentos: um dado para armazenar e um
+objeto arquivo que pode ser usado para armazenar o dado. No caso ele
+armazena a lista numbers no arquivo numbers.json. Esse programa não gera
+uma saída.
+Os dados serão gravados num formato parecido com Python:
+[2, 3, 5, 7, 11, 13]
+
+# Exemplo:
+Agora um programa que use json.load() para ler a lista de volta para a
+memória:
+number_reader.py
+_________________________________________
+import json
+
+filename = &#39;numbers.json&#39;
+with open(filename) as f_obj:
+numbers = json.load(f_obj)
+print(numbers)
+A função json.load() carrega as informações armazenadas em numbers.json e
+as guarda na variável numbers. Esse programa gera uma saída, que é a lista
+criada em number_write.py.
+Salvando e recuperando dados gerados pelo usuário
+Vamos supor que a primeira vez o usuário executar o programa, pedimos a ele
+seu nome e ao executar novamente o programa, seu nome deverá ser
+lembrado. Vamos ver um exemplo de programa que faz esse trabalho.
+# Exemplo
+remember_me.py
+______________________________________________
+import json
+username = input(&quot;Qual o seu nome? &quot;)
+filename = &#39;username.json&#39;
+with open(filename, &#39;w&#39;) as f_obj:
+json.dump(username, f_obj)
+print(&quot;Vamos lembrar de você quando você voltar, &quot; + username + &quot;!&quot;)
+Armazenamos o nome do usuário no arquivo username.json.
+Faremos uma saudação quando o usuário voltar, cujo nome esteja
+armazenado.
+greet_user.py
+___________________________________________________
+import json
+filename = &#39;username.json&#39;
+with open(filename) as f_obj:
+username = json.load(f_obj)
+print(&quot;Bem vindo de volta, &quot; + username + &quot;!&quot;)
+Ao recuperar o nome do usuário, podemos desejar-lhe boas vindas:
+Bem vindo de volta, Sol!
+Agora precisamos juntar esses dois arquivos em um só. Para o caso do nome
+do usuário não estiver na memória, usaremos um bloco try para tentar
+recuperar seu nome, e se não existir faremos um except para pedir um nome
+de usuário e armazená-lo em username.json para ser usado da próxima vez.
+remember_me.py
+
+___________________________________________
+import json
+# Carrega o nome do usuário se foi armazenado anteriormente. Caso
+# contrário, pede que o usuário forneça o nome e armazena essa informação
+filename = &#39;username.json&#39;
+try:
+with open(filename) as f_obj:
+username = json.load(f_obj)
+except FileNotFoundError:
+username = input(&quot;Qual o seu nome? &quot;)
+with open(filename, &#39;w&#39;) as f_obj:
+json.dump(username, f_obj)
+print(&quot;Vamos lembrar de você quando você voltar, &quot; + username + &quot;!&quot;)
+else:
+print(&quot;Bem vindo de volta, &quot; + username + &quot;!&quot;)
+
+Se a primeira vez que o programa for executado, a saída ficará assim:
+Qual o seu nome? Sol
+Vamos lembrar de você quando você voltar, Sol!
